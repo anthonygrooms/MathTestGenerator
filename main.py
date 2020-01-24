@@ -1,4 +1,4 @@
-#Generate a math test (question and answers) in a .txt that
+#Generate a math test (question and answers) in a .txt
 
 import random
 
