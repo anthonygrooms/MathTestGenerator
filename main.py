@@ -1,83 +1,92 @@
-#Generate a math test (question and answers) in a .txt
+'''
+Generate a math test that includes randomly generated questions with
+answer key as a .txt file:
 
+User enters...
+1) name of file
+2) how many math questions
+3) types of math questions they want generated
+
+Generate the test
+'''
+
+#Gives us random functionality
 import random
 
-#Get the statistics for the test and assure correct input
-
-fileName = ""
+#Recieve required data from the user to create the test
+fileName = ''
 questionCount = 0
-questionTypes = ""
+questionTypes = ''
 
-fileName = input("Enter name for test without .txt extension: ")+".txt"
-
-while True:
-  try:
-    questionCount = int(input("How many questions? "))
-    if questionCount >= 1:
-      break
-    print("Number of questions must be greater than 0. \n")
-  except:
-    print("Enter an integer. \n")
+fileName = input('Enter the name for the text without .txt extension: ')+'.txt'
 
 while True:
-  questionTypes = input("Enter every question type desired on one line (question types include + addition,- subtraction,* multiplication,/ division): ")
-  if "+" in questionTypes or "-" in questionTypes or "*" in questionTypes or "/" in questionTypes:
-    break
-  print("Input must contain one of the operation symbols. \n")
+    try:
+        questionCount = int(input('How many questions? '))
+        if questionCount >= 1:
+            break
+        print('Number of questions must be greater than 0.\n')
+    except:
+        print('Enter an integer.\n')
+
+while True:
+    print('Enter every question type desired on one line (+ addition,- subtraction,* multiplication,/ division)')
+    questionTypes = input('Example Input: +* : ')
+    if '+' in questionTypes or '-' in questionTypes or '*' in questionTypes or '/' in questionTypes:
+        break
+    print('Input must contain one of the operation symbols.\n')
 
 outF = open(fileName,'w')
 
 answers = [] #Create a list to store the correct answers
 
-#Create a list to store all the desired types of questions
+#Create a list to store all the desired types of operations
 types = []
-for operation in "+-*/":
-  if operation in questionTypes:
-          types.append(operation)
+for operation in '+-*/':
+    if operation in questionTypes:
+        types.append(operation)
 
-outF.write("questions:\n")
+outF.write('questions:\n')
 
 #Write all the questions
 for question in range(1,questionCount+1):
+    
+    typeQ = types[random.randint(0,len(types)-1)] #Randomize the type of question
+    #Randomize a and b
+    a = random.randint(0,12)
+    b = random.randint(0,12)
 
-  typeQ = types[random.randint(0,len(types)-1)]	#Randomize the type of question
+    #Compute the answer
+    if typeQ == '+':
+        c = a + b
+    elif typeQ == '-':
+        c = a - b
+    elif typeQ == '*':
+        c = a * b
+    else:
+        #If the type of question is division, force b to evenly fit into a
+        while b != 0 and a % b != 0:
+            b = random.randint(0,12)
+        
+        #If b is 0, do not divide a by b, rather set the answer c equal to 'undefined'
+        if b == 0:
+            c = 'undefined'
+        else:
+            c = a / b
+    
+    #Add the answer to our list of answers
+    if c == 'undefined':
+        answers.append(c)
+    else:
+        answers.append(int(c))
 
-  #Randomize a and b
-  a = random.randint(0,12)
-  b = random.randint(0,12)
-  c = 0
-
-  #Compute the correct answer
-  if typeQ == "+":
-    c = a + b
-  elif typeQ == "-":
-    c = a - b
-  elif typeQ == "*":
-    c = a * b
-  else:
-    #If the type of question is division, force b to evenly fit into a
-    while b != 0 and a % b != 0:
-      b = random.randint(0,12)
-    #If b is 0, do not divide, rather set the correct answer equal to "error"
-    if b == 0:
-      c = "error"
-    else:		
-      c = a / b
-
-  #Add the answer to our list of answers
-  if c == "error":
-    answers.append(c)
-  else:
-    answers.append(int(c))
-
-  #Write the question to the output file
-  outF.write("{}. {} {} {} = ?".format(question,a,typeQ,b)+"\n")
-	
-outF.write("\nanswer key:\n")
+    #Write the question to the output file
+    outF.write('{}. {} {} {} = ?\n'.format(question,a,typeQ,b))
 
 #Write the answer key
+outF.write('\nanswer key:\n')
 for question in range(1,questionCount+1):
-        outF.write("{}: {}".format(question,answers[question-1])+"\n")
+    outF.write('{}. {}\n'.format(question,answers[question-1]))
 outF.close()
 
-print("\ndone.")
+print('\ndone.')
