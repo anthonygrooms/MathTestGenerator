@@ -18,8 +18,16 @@ fileName = ''
 questionCount = 0
 questionTypes = ''
 
-fileName = input('Enter the name for the text without .txt extension: ')+'.txt'
+#Get file name
+while True:
+    try:
+        fileName = input('Enter the name for the text without .txt extension: ')+'.txt'
+        outF = open(fileName,'w')
+        break
+    except:
+        print("File name Error.\n")
 
+#Get question count
 while True:
     try:
         questionCount = int(input('How many questions? '))
@@ -29,14 +37,13 @@ while True:
     except:
         print('Enter an integer.\n')
 
+#Get question types
 while True:
     print('Enter every question type desired on one line (+ addition,- subtraction,* multiplication,/ division)')
     questionTypes = input('Example Input: +* : ')
     if '+' in questionTypes or '-' in questionTypes or '*' in questionTypes or '/' in questionTypes:
         break
     print('Input must contain one of the operation symbols.\n')
-
-outF = open(fileName,'w')
 
 answers = [] #Create a list to store the correct answers
 
